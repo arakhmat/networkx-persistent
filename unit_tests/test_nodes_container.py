@@ -4,7 +4,7 @@ from networkx_persistent import NodesContainer
 nodes = [0, "1", (3, "4")]
 
 
-def get_test_node_container():
+def get_test_nodes_container():
     nodes_container = NodesContainer()
     for node in nodes:
         nodes_container = nodes_container.add_node(node)
@@ -26,7 +26,7 @@ def test_add_node():
 
 
 def test_remove_node():
-    nodes_container = get_test_node_container()
+    nodes_container = get_test_nodes_container()
 
     assert len(nodes_container) == 3
     assert set(nodes_container) == {0, "1", (3, "4")}
@@ -45,21 +45,21 @@ def test_remove_node():
 
 
 def test_contains():
-    nodes_container = get_test_node_container()
+    nodes_container = get_test_nodes_container()
 
     for node in nodes_container:
         assert node in nodes_container
 
 
 def test_callable():
-    nodes_container = get_test_node_container()
+    nodes_container = get_test_nodes_container()
 
     for node in nodes_container():
         assert node in nodes_container
 
 
 def test_get_item():
-    nodes_container = get_test_node_container()
+    nodes_container = get_test_nodes_container()
 
     for node in nodes_container:
         assert nodes_container[node] == pyrpds.pmap()

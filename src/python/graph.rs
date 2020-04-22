@@ -1,9 +1,9 @@
 use std::hash::{Hash, Hasher};
 
 use pyo3::class::{PyObjectProtocol, PySequenceProtocol};
-use pyo3::prelude::{pyclass, pymethods, pyproto};
+use pyo3::prelude::{pyclass, pymethods, pyproto, PyModule};
 use pyo3::{
-    PyAny, PyCell, PyIterProtocol, PyMappingProtocol, PyObject, PyRefMut, PyResult, Python,
+    IntoPy, PyAny, PyCell, PyIterProtocol, PyMappingProtocol, PyObject, PyRefMut, PyResult, Python,
     ToPyObject,
 };
 
@@ -14,46 +14,64 @@ use pyrpds::py_object_protocol;
 
 #[pyclass]
 #[derive(PartialEq, Eq, Hash)]
-struct NodesContainer {
-    value: crate::nodes_container::NodesContainer<Object>,
+struct Graph {
+    value: crate::graph::Graph<Object>,
 }
 
 #[pymethods]
-impl NodesContainer {
+impl Graph {
     #[new]
     fn new() -> Self {
-        NodesContainer {
-            value: crate::nodes_container::NodesContainer::new(),
+        Graph {
+            value: crate::graph::Graph::new(),
         }
     }
 
     fn add_node(&self, node: PyObject) -> Self {
-        NodesContainer {
+        Graph {
             value: self.value.add_node(Object::new(node)),
         }
     }
 
     fn remove_node(&self, node: PyObject) -> Self {
-        NodesContainer {
+        Graph {
             value: self.value.remove_node(&Object::new(node)),
         }
     }
 
-    #[call]
-    fn __call__(&self) -> PyResult<pyrpds::iterators::PyObjectIterator> {
-        let mut elements = std::vec::Vec::new();
-        for element in self.value.iter() {
-            elements.push(pyrpds::object::extract_py_object(Some(element))?)
+    fn add_edge(&self, u: PyObject, v: PyObject) -> Self {
+        Graph {
+            value: self.value.add_edge(&Object::new(u), &Object::new(v)),
         }
+    }
 
-        Ok(pyrpds::iterators::PyObjectIterator::new(
-            elements.into_iter(),
-        ))
+    fn remove_edge(&self, u: PyObject, v: PyObject) -> Self {
+        Graph {
+            value: self.value.remove_edge(&Object::new(u), &Object::new(v)),
+        }
+    }
+
+    fn edges(&self) -> PyResult<pyrpds::Vector> {
+        let gil = Python::acquire_gil();
+        let py = gil.python();
+
+        let edges = self.value.edges();
+        let mut python_edges = pyrpds::Vector::new();
+        for (_, neighbors) in edges.iter() {
+            let mut python_neighbors = pyrpds::Vector::new();
+            for neighbor in neighbors {
+                python_neighbors = python_neighbors.append(neighbor.py_object.clone_ref(py))?;
+            }
+            let python_neighbors = python_neighbors.into_py(py);
+            python_edges = python_edges.append(python_neighbors)?;
+        }
+        let python_edges = python_edges;
+        Ok(python_edges)
     }
 }
 
 #[pyproto]
-impl PySequenceProtocol for NodesContainer {
+impl PySequenceProtocol for Graph {
     fn __len__(&self) -> PyResult<usize> {
         let len = self.value.size();
         Ok(len)
@@ -65,7 +83,7 @@ impl PySequenceProtocol for NodesContainer {
 }
 
 #[pyproto]
-impl PyMappingProtocol for NodesContainer {
+impl PyMappingProtocol for Graph {
     fn __getitem__(&self, _item: PyObject) -> PyResult<PyObject> {
         let gil = Python::acquire_gil();
         let py = gil.python();
@@ -83,7 +101,7 @@ impl PyMappingProtocol for NodesContainer {
 }
 
 #[pyproto]
-impl PyIterProtocol for NodesContainer {
+impl PyIterProtocol for Graph {
     fn __iter__(slf: PyRefMut<Self>) -> PyResult<pyrpds::iterators::PyObjectIterator> {
         let mut elements = std::vec::Vec::new();
         for element in slf.value.iter() {
@@ -96,10 +114,10 @@ impl PyIterProtocol for NodesContainer {
     }
 }
 
-py_object_protocol!(NodesContainer);
+py_object_protocol!(Graph);
 
-pub fn py_binding(_py: Python, m: &pyo3::prelude::PyModule) -> PyResult<()> {
-    m.add_class::<NodesContainer>()?;
+pub fn py_binding(_py: Python, m: &PyModule) -> PyResult<()> {
+    m.add_class::<Graph>()?;
 
     Ok(())
 }

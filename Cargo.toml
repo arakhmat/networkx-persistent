@@ -40,4 +40,4 @@ version = "0.7.0"
 features = ["serde"]
 
 [dependencies.pyrpds]
-version = "0.0.5"
+version = "0.0.6"

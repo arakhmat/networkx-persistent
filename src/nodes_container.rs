@@ -4,17 +4,17 @@ use std::hash::{Hash, Hasher};
 
 use rpds::HashTrieSet as RpdsSet;
 
-#[derive(PartialEq, Eq)]
+#[derive(PartialEq, Eq, Clone)]
 pub struct NodesContainer<NodeType>
 where
-    NodeType: Eq + Hash,
+    NodeType: Eq + Hash + Clone,
 {
     nodes: RpdsSet<NodeType>,
 }
 
 impl<NodeType> NodesContainer<NodeType>
 where
-    NodeType: Eq + Hash,
+    NodeType: Eq + Hash + Clone,
 {
     pub fn new() -> Self {
         NodesContainer {
@@ -47,7 +47,7 @@ where
 
 impl<NodeType> Hash for NodesContainer<NodeType>
 where
-    NodeType: Eq + Hash,
+    NodeType: Eq + Hash + Clone,
 {
     fn hash<H: Hasher>(&self, state: &mut H) {
         // Add the hash of length so that if two collections are added one after the other it doesn't
