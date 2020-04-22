@@ -1,4 +1,6 @@
-# Persistent NetworkX Data Structures 
+[![Build Status](https://travis-ci.com/arakhmat/networkx-persistent.svg?branch=master)](https://travis-ci.com/arakhmat/networkx-persistent)
+
+# Persistent NetworkX Data Structures
 
 `networkx-persistent` provides persistent versions of NetworkX Data Structures.
 
