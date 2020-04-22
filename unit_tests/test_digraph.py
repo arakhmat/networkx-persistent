@@ -1,11 +1,11 @@
 import pyrpds
-from networkx_persistent import Graph
+from networkx_persistent import DiGraph
 
 nodes = [0, "1", (3, "4")]
 
 
 def get_test_graph():
-    graph = Graph()
+    graph = DiGraph()
     for node in nodes:
         graph = graph.add_node(node)
 
@@ -17,8 +17,8 @@ def get_test_graph():
 
 
 def test_constructor():
-    graph = Graph()
-    assert graph == Graph()
+    graph = DiGraph()
+    assert graph == DiGraph()
 
 
 def test_add_node():
@@ -77,6 +77,3 @@ def test_remove_edge():
     graph_with_removed_edge = graph.remove_edge(0, "1")
     edges = list(graph_with_removed_edge.edges())
     assert len(edges) == 3
-
-    for neighbors in edges:
-        assert tuple(neighbors) in {((3, "4"),), (0, "1"), ("1", 0)}
