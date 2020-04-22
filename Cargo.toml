@@ -1,0 +1,43 @@
+[package]
+name = "networkx-persistent"
+description = "Persistent NetworkX Data Structures"
+version = "0.0.0"
+authors = ["Akhmed Rakhmati <akhmed.rakhmati@gmail.com>"]
+
+edition = "2018"
+
+homepage = "https://github.com/arakhmat/networkx-persistent/"
+repository = "https://github.com/arakhmat/networkx-persistent/"
+readme = "README.md"
+license-file = "LICENSE"
+
+keywords = [
+	"data-structures",
+	"immutable",
+	"networkx",
+	"persistent",
+	"python",
+]
+categories = ["data-structures"]
+
+exclude = [
+    "unit_tests",
+]
+
+[lib]
+name = "networkx_persistent"
+crate-type = ["cdylib"]
+
+[dependencies.pyo3]
+version = "0.9.2"
+features = ["extension-module"]
+
+[dependencies.archery]
+version = "0.3"
+
+[dependencies.rpds]
+version = "0.7.0"
+features = ["serde"]
+
+[dependencies.pyrpds]
+version = "0.0.5"
