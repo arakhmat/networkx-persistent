@@ -2,7 +2,7 @@
 
 # Persistent NetworkX Data Structures
 
-`networkx-persistent` provides persistent versions of NetworkX Data Structures.
+`networkx-persistent` provides [persistent](https://en.wikipedia.org/wiki/Persistent_data_structure) versions of NetworkX Data Structures.
 
 # Installation Instructions
 
