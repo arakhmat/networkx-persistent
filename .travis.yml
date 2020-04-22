@@ -26,7 +26,7 @@ before_script:
   - rustup component add clippy
 
 script:
-  - conda activate pyrpds
+  - conda activate networkx-persistent
   - black . --check
   - cargo fmt -- --check
   - cargo clippy --all-targets --all-features -- -D warnings
